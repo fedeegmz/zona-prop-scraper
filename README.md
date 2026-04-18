@@ -4,21 +4,22 @@ Scraper de Zonaprop.
 
 ## Modo de uso:
 
-1- Instalar las dependencias declaradas en el archivo `requirements.txt`:
+1. Instalar las dependencias declaradas en el archivo `pyproject.toml`:
 
 Con pip:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
-Con conda:
+2. Activar el entorno virtual
 
 ```bash
-conda install --file requirements.txt
+# Linux y MacOS
+source .venv/bin/activate
 ```
 
-2- Ejecutar el script `zonaprop-scraping.py` pasando como argumento la url de la página de Zonaprop que se desea scrapear (por default se utilizará la url: https://www.zonaprop.com.ar/departamentos-alquiler.html):
+3. Ejecutar el script `zonaprop-scraping.py` pasando como argumento la url de la página de Zonaprop que se desea scrapear (por default se utilizará la url: https://www.zonaprop.com.ar/departamentos-alquiler.html):
 
 ```bash
 python zonaprop-scraping.py <url>
@@ -30,7 +31,7 @@ Por ejemplo:
 python zonaprop-scraping.py https://www.zonaprop.com.ar/departamentos-alquiler.html
 ```
 
-3- El script generará un archivo `.csv` en el directorio `data` con los datos de los inmuebles obtenidos.
+4. El script generará un archivo `.csv` en el directorio `data` con los datos de los inmuebles obtenidos.
 
 ## Análisis de los datos:
 

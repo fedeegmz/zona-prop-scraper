@@ -1,0 +1,21 @@
+[project]
+name = "zona-prop-scraper"
+version = "0.1.0"
+description = "Scraper de Zonaprop"
+readme = "README.md"
+
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "cloudscraper>=1.2.71",
+    "lxml>=6.1.0",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.4",
+    "pandas>=3.0.2",
+    "scikit-learn>=1.8.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-mock>=3.15.1",
+]
