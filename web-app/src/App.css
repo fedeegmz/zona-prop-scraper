@@ -1,0 +1,163 @@
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #0d1117;
+}
+
+.sidebar {
+  width: 450px;
+  min-width: 450px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+}
+
+.sidebar-header {
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #60a5fa, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sidebar-header p {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.property-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.property-card {
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.property-card.active {
+  background: rgba(96, 165, 250, 0.1);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.price .expenses {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.address {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.features {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.map-container {
+  flex: 1;
+  height: 100%;
+  position: relative;
+}
+
+/* Custom Marker CSS */
+.custom-div-icon {
+  background: transparent;
+  border: none;
+}
+.marker-pin {
+  background: #1e293b;
+  border: 2px solid #60a5fa;
+  color: white;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+  position: relative;
+  top: -10px;
+  left: -50%;
+}
+.marker-pin:hover {
+  background: #60a5fa;
+  border-color: #fff;
+  transform: scale(1.05);
+  z-index: 1000;
+}
+.marker-pin::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #60a5fa;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  color: #60a5fa;
+  gap: 16px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin {
+  animation: spin 1s infinite linear;
+}
