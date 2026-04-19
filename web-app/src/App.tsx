@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import Papa from 'papaparse';
-import { MapPin, Maximize2, BedDouble, Bath, Loader2, Navigation } from 'lucide-react';
+import { MapPin, Maximize2, BedDouble, Bath, Loader2, Navigation, ExternalLink } from 'lucide-react';
 import './App.css';
 
 interface Property {
@@ -74,10 +74,10 @@ function App() {
   }, [properties, activeProp]);
 
   // Create custom marker icon
-  const createCustomIcon = (price: number, currency: string) => {
+  const createCustomIcon = (price: number, currency: string, isActive: boolean) => {
     return L.divIcon({
       className: 'custom-div-icon',
-      html: `<div class="marker-pin">${formatPrice(price, currency)}</div>`,
+      html: `<div class="marker-pin ${isActive ? 'active' : ''}">${formatPrice(price, currency)}</div>`,
       iconSize: [0, 0],
       iconAnchor: [0, 0]
     });
@@ -112,13 +112,10 @@ function App() {
         
         <div className="property-list">
           {properties.map((prop, idx) => (
-            <a 
+            <div 
               key={idx}
-              href={prop.url}
-              target="_blank"
-              rel="noopener noreferrer"
               className={`glass-card property-card ${activeProp === prop.url ? 'active' : ''}`}
-              onMouseEnter={() => setActiveProp(prop.url)}
+              onClick={() => setActiveProp(prop.url)}
             >
               <div className="price">
                 <span>{formatPrice(prop.price_value, prop.price_currency)}</span>
@@ -148,7 +145,20 @@ function App() {
                   </div>
                 )}
               </div>
-            </a>
+
+              <div className="card-actions">
+                <a 
+                  href={prop.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn-primary"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ExternalLink size={14} />
+                  Ver en Zonaprop
+                </a>
+              </div>
+            </div>
           ))}
         </div>
       </aside>
@@ -173,10 +183,7 @@ function App() {
             <Marker 
               key={idx} 
               position={[prop.latitude, prop.longitude]}
-              icon={createCustomIcon(prop.price_value, prop.price_currency)}
-              eventHandlers={{
-                mouseover: () => setActiveProp(prop.url),
-              }}
+              icon={createCustomIcon(prop.price_value, prop.price_currency, activeProp === prop.url)}
               zIndexOffset={activeProp === prop.url ? 1000 : 0}
             >
               {/* Optional: Add Popup if user clicks instead of hovering */}
