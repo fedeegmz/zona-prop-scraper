@@ -55,10 +55,6 @@ class JSONScraper:
         print(f"Total estates reported by search: {estates_quantity}")
 
         while estates_quantity > len(estates):
-            # break early like the original did for debug
-            if page_number == 2:
-                break
-
             print(f"Page: {page_number}")
             new_estates = self.scrap_page(page_number)
             if not new_estates:
