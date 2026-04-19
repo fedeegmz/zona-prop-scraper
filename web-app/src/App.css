@@ -294,6 +294,53 @@
   outline: none;
 }
 
+.zoom-controls {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  background: rgba(20, 24, 33, 0.8);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filters-open .zoom-controls {
+  right: 324px;
+}
+
+.zoom-controls button {
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.zoom-controls button:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.05);
+  color: #60a5fa;
+}
+
+.zoom-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  width: 70%;
+  margin: 0 auto;
+}
+
 .loading-state {
   display: flex;
   flex-direction: column;

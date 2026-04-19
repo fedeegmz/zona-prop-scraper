@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import Papa from 'papaparse';
-import { MapPin, Maximize2, BedDouble, Bath, Loader2, Navigation, ExternalLink, SlidersHorizontal, ChevronRight, ChevronLeft, X } from 'lucide-react';
+import { MapPin, Maximize2, BedDouble, Bath, Loader2, Navigation, ExternalLink, SlidersHorizontal, ChevronRight, Plus, Minus } from 'lucide-react';
 import './App.css';
 
 interface Property {
@@ -30,6 +30,22 @@ const formatPrice = (value: number, currency: string) => {
     maximumFractionDigits: 0
   }).format(value);
 };
+
+// Custom Zoom Controls
+function ZoomControls() {
+  const map = useMap();
+  return (
+    <div className="zoom-controls">
+      <button onClick={() => map.zoomIn()} title="Acercar">
+        <Plus size={20} />
+      </button>
+      <div className="zoom-divider" />
+      <button onClick={() => map.zoomOut()} title="Alejar">
+        <Minus size={20} />
+      </button>
+    </div>
+  );
+}
 
 // Component to dynamically fly to location
 function MapAutoFly({ center }: { center: [number, number] | null }) {
@@ -114,17 +130,17 @@ function App() {
   }
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${showFilters ? 'filters-open' : ''}`}>
       {/* Sidebar */}
       <aside className="sidebar glass-panel">
         <div className="sidebar-header">
           <h1>Zonaprop Explorer</h1>
           <p>{filteredProperties.length} propiedades encontradas</p>
         </div>
-        
+
         <div className="property-list">
           {filteredProperties.map((prop, idx) => (
-            <div 
+            <div
               key={idx}
               className={`glass-card property-card ${activeProp === prop.url ? 'active' : ''}`}
               onClick={() => setActiveProp(prop.url)}
@@ -139,7 +155,7 @@ function App() {
                 <MapPin size={14} style={{ display: 'inline', marginRight: 4, opacity: 0.7 }} />
                 {prop.address}
               </div>
-              
+
               <div className="features">
                 {prop.square_meters_area && (
                   <div className="feature">
@@ -159,9 +175,9 @@ function App() {
               </div>
 
               <div className="card-actions">
-                <a 
-                  href={prop.url} 
-                  target="_blank" 
+                <a
+                  href={prop.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary"
                   onClick={(e) => e.stopPropagation()}
@@ -177,9 +193,9 @@ function App() {
 
       {/* Map View */}
       <main className="map-container">
-        <MapContainer 
-          center={mapCenter} 
-          zoom={13} 
+        <MapContainer
+          center={mapCenter}
+          zoom={13}
           style={{ height: '100%', width: '100%', background: '#1e293b' }}
           zoomControl={false}
         >
@@ -188,12 +204,13 @@ function App() {
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           />
-          
+
+          <ZoomControls />
           <MapAutoFly center={mapCenter} />
 
           {filteredProperties.map((prop, idx) => (
-            <Marker 
-              key={idx} 
+            <Marker
+              key={idx}
               position={[prop.latitude, prop.longitude]}
               icon={createCustomIcon(prop.price_value, prop.price_currency, activeProp === prop.url)}
               zIndexOffset={activeProp === prop.url ? 1000 : 0}
@@ -212,7 +229,7 @@ function App() {
 
       {/* Right Sidebar - Filters */}
       <aside className={`filter-sidebar glass-panel ${showFilters ? 'open' : ''}`}>
-        <button 
+        <button
           className="filter-toggle"
           onClick={() => setShowFilters(!showFilters)}
           title={showFilters ? "Cerrar filtros" : "Abrir filtros"}
@@ -223,7 +240,7 @@ function App() {
         <div className="filter-content">
           <div className="filter-header">
             <h3>Filtros</h3>
-            { (minPrice !== "" || maxPrice !== "") && (
+            {(minPrice !== "" || maxPrice !== "") && (
               <button className="btn-text" onClick={() => { setMinPrice(""); setMaxPrice(""); }}>
                 Limpiar
               </button>
@@ -235,18 +252,18 @@ function App() {
             <div className="input-group">
               <div className="input-wrapper">
                 <span>Min</span>
-                <input 
-                  type="number" 
-                  placeholder="Ej: 500000" 
+                <input
+                  type="number"
+                  placeholder="Ej: 500000"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value === "" ? "" : Number(e.target.value))}
                 />
               </div>
               <div className="input-wrapper">
                 <span>Max</span>
-                <input 
-                  type="number" 
-                  placeholder="Ej: 1500000" 
+                <input
+                  type="number"
+                  placeholder="Ej: 1500000"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value === "" ? "" : Number(e.target.value))}
                 />
