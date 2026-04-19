@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import Papa from 'papaparse';
-import { MapPin, Maximize2, BedDouble, Bath, Loader2, Navigation, ExternalLink } from 'lucide-react';
+import { MapPin, Maximize2, BedDouble, Bath, Loader2, Navigation, ExternalLink, SlidersHorizontal, ChevronRight, ChevronLeft, X } from 'lucide-react';
 import './App.css';
 
 interface Property {
@@ -46,6 +46,9 @@ function App() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeProp, setActiveProp] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [minPrice, setMinPrice] = useState<number | "">("");
+  const [maxPrice, setMaxPrice] = useState<number | "">("");
 
   useEffect(() => {
     Papa.parse<Property>('/data.csv', {
@@ -66,12 +69,21 @@ function App() {
     });
   }, []);
 
+  const filteredProperties = useMemo(() => {
+    return properties.filter(p => {
+      if (minPrice !== "" && p.price_value < minPrice) return false;
+      if (maxPrice !== "" && p.price_value > maxPrice) return false;
+      return true;
+    });
+  }, [properties, minPrice, maxPrice]);
+
   const mapCenter = useMemo(() => {
-    if (properties.length === 0) return [-31.4201, -64.1888] as [number, number]; // Cordoba default
-    const active = properties.find(p => p.url === activeProp);
+    const list = filteredProperties.length > 0 ? filteredProperties : properties;
+    if (list.length === 0) return [-31.4201, -64.1888] as [number, number]; // Cordoba default
+    const active = list.find(p => p.url === activeProp);
     if (active) return [active.latitude, active.longitude] as [number, number];
-    return [properties[0].latitude, properties[0].longitude] as [number, number];
-  }, [properties, activeProp]);
+    return [list[0].latitude, list[0].longitude] as [number, number];
+  }, [properties, filteredProperties, activeProp]);
 
   // Create custom marker icon
   const createCustomIcon = (price: number, currency: string, isActive: boolean) => {
@@ -107,11 +119,11 @@ function App() {
       <aside className="sidebar glass-panel">
         <div className="sidebar-header">
           <h1>Zonaprop Explorer</h1>
-          <p>{properties.length} propiedades encontradas</p>
+          <p>{filteredProperties.length} propiedades encontradas</p>
         </div>
         
         <div className="property-list">
-          {properties.map((prop, idx) => (
+          {filteredProperties.map((prop, idx) => (
             <div 
               key={idx}
               className={`glass-card property-card ${activeProp === prop.url ? 'active' : ''}`}
@@ -179,7 +191,7 @@ function App() {
           
           <MapAutoFly center={mapCenter} />
 
-          {properties.map((prop, idx) => (
+          {filteredProperties.map((prop, idx) => (
             <Marker 
               key={idx} 
               position={[prop.latitude, prop.longitude]}
@@ -197,6 +209,52 @@ function App() {
           ))}
         </MapContainer>
       </main>
+
+      {/* Right Sidebar - Filters */}
+      <aside className={`filter-sidebar glass-panel ${showFilters ? 'open' : ''}`}>
+        <button 
+          className="filter-toggle"
+          onClick={() => setShowFilters(!showFilters)}
+          title={showFilters ? "Cerrar filtros" : "Abrir filtros"}
+        >
+          {showFilters ? <ChevronRight size={20} /> : <SlidersHorizontal size={20} />}
+        </button>
+
+        <div className="filter-content">
+          <div className="filter-header">
+            <h3>Filtros</h3>
+            { (minPrice !== "" || maxPrice !== "") && (
+              <button className="btn-text" onClick={() => { setMinPrice(""); setMaxPrice(""); }}>
+                Limpiar
+              </button>
+            )}
+          </div>
+
+          <div className="filter-section">
+            <label>Rango de Precio</label>
+            <div className="input-group">
+              <div className="input-wrapper">
+                <span>Min</span>
+                <input 
+                  type="number" 
+                  placeholder="Ej: 500000" 
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                />
+              </div>
+              <div className="input-wrapper">
+                <span>Max</span>
+                <input 
+                  type="number" 
+                  placeholder="Ej: 1500000" 
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }
